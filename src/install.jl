@@ -5,4 +5,7 @@ Pkg.add("LoopVectorization")
 Pkg.add("DifferentialEquations")
 Pkg.add("ArgParse")
 Pkg.add("HDF5")
+Pkg.add("StructArrays")
+
+
 

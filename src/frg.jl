@@ -64,7 +64,7 @@ function main()
 
     # fixed_step_integrator!(RHS, V, dispersion)
     # magnus1!(RHS, V, dispersion)
-    adaptive_euler!(RHS, V, dispersion)
+    @time adaptive_euler!(RHS, V, dispersion)
     # library_integrator!(RHS,V,dispersion,Tsit5())
     @show maximum(abs.(V))
 

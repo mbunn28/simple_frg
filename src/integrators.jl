@@ -134,8 +134,8 @@ function adaptive_euler!(RHS, V, dispersion, span=(50.0, 1E-6))
     lam = span[1]
     maxV = 1.0
     while lam > span[2]
-        @show lam
-        @show maximum(abs.(V))
+        #@show lam
+        #@show maximum(abs.(V))
 
         dlam = lam / maxV
 
@@ -155,6 +155,7 @@ function adaptive_euler!(RHS, V, dispersion, span=(50.0, 1E-6))
             break
         end
     end
+    print(lam, "\n")
 end
 
 Base.@propagate_inbounds function Base.setindex!(s::StructArray{ComplexF64, <:Any, <:Any, Int}, vals::Float64, I::Int)

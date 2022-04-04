@@ -51,10 +51,10 @@ function main()
     divergence = 50.0
     filename = "adaeuler"
 
-    @show nk
-    @show nkf
-    @show U
-    @show params
+    #@show nk
+    #@show nkf
+    #@show U
+    #@show params
 
     @assert(iseven(nk), "nk should be even to include HSP")
     @assert(isodd(nkf), "fine nk should be odd to respect symmetry")
@@ -64,9 +64,9 @@ function main()
 
     # fixed_step_integrator!(RHS, V, dispersion)
     # magnus1!(RHS, V, dispersion)
-    @time adaptive_euler!(RHS, V, dispersion)
+    adaptive_euler!(RHS, V, dispersion)
     # library_integrator!(RHS,V,dispersion,Tsit5())
-    @show maximum(abs.(V))
+    #@show maximum(abs.(V))
 
     println(analyze_vertex(V))
 
@@ -81,7 +81,7 @@ function main()
     file["reV"] = V.re
     file["imV"] = V.im
     file["global_results/rhsevals"] = rhsevals
-    println("evals of rhs: ", rhsevals)
+    #println("evals of rhs: ", rhsevals)
     close(file)
 end
 

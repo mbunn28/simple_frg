@@ -156,7 +156,8 @@ function adaptive_euler!(RHS, V, dispersion, span=(50.0, 1E-6))
         end
     end
     print(lam, "\n")
-return lam
+    return lam
+end
 
 Base.@propagate_inbounds function Base.setindex!(s::StructArray{ComplexF64, <:Any, <:Any, Int}, vals::Float64, I::Int)
     @boundscheck checkbounds(s, I)

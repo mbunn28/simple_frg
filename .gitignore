@@ -24,4 +24,6 @@ docs/site/
 Manifest.toml
 
 *.jpg
+*.h5
+*.png
 recreate_tp_lambda_plot/

@@ -64,7 +64,7 @@ function main()
 
     # fixed_step_integrator!(RHS, V, dispersion)
     # magnus1!(RHS, V, dispersion)
-    adaptive_euler!(RHS, V, dispersion)
+    lambda_crit = adaptive_euler!(RHS, V, dispersion)
     # library_integrator!(RHS,V,dispersion,Tsit5())
     #@show maximum(abs.(V))
 
@@ -81,6 +81,7 @@ function main()
     file["reV"] = V.re
     file["imV"] = V.im
     file["global_results/rhsevals"] = rhsevals
+    file["lambda_crit"] = lambda_crit
     #println("evals of rhs: ", rhsevals)
     close(file)
 end

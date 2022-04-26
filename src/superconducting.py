@@ -1,12 +1,19 @@
 import numpy as np
+from numpy import ndarray
 import h5py
 from numpy import complex128, linalg
+import matplotlib.pyplot as plt
 
-f = h5py.File('src/magnus2.h5', 'r')
+file_name = "adaeuler"
+f = h5py.File(f'src/{file_name}.h5', 'r')
+# print(f.keys())
 U = f['U']
 U = U[()]
-V = f['V']
-V = V[()]
+reV = f['reV']
+reV = reV[()]
+imV = f['imV']
+imV = imV[()]
+V = reV + 1j*imV
 hopping = f['hopping']
 nk = f['nk']
 nk = nk[()]
@@ -19,26 +26,51 @@ t = t[()]
 tp = hopping['tp']
 tp = tp[()]
 
-print(nkf)
-print(nk)
-print(np.shape(V))
-print(mu)
-print(t)
-print(tp)
+LamC = 0.05
 
-A = 1
+print("Superconducting Gap Calculation")
+print("--------------------------------")
+print(f"nkf={nkf} (not used)")
+print(f"nk={nk}")
+print(f"t={t}")
+print(f"tp={tp}")
+print(f"mu={mu}")
+print(f"lambda_crit={LamC}")
 
-tensor = np.zeros((2,2,2,2), dtype=complex128)
-for o1 in range(2):
-    for o2 in range(2):
-        for o3 in range(2):
-            for o4 in range(2):
-                if (o1 == o3 and o2 == o4):
-                    tensor[o1,o2,o3,o4] = A
-                if (o1 == o4 and o2 == o3):
-                    tensor[o1,o2,o3,o4] = -A
 
-u, s, vh = linalg.svd(tensor)
-print(u)
-print(s)
-print(vh)
+def ferm(x):
+    return 1/(1+np.exp(x))
+
+def e(kx,ky):
+    return -2*t*(np.cos(kx)+np.cos(ky))-4*tp*np.cos(kx)*np.cos(ky) - mu
+
+def L(kpx, kpy):
+    return (ferm(-e(kpx,kpy)/LamC) - ferm(e(kpx,kpy)/LamC))/(2 * e(kpx,kpy))
+    
+VL = np.zeros((nk*nk,nk*nk), dtype=complex128)
+
+for kx in range(nk):
+    for ky in range(nk):
+        for kpx in range(nk):
+            for kpy in range(nk):
+                VL[kx+nk*ky, kpx+nk*kpy] = V[kx,ky,-kx,-ky,kpx,kpy] * L(kpx,kpy)
+
+u, s, vh = linalg.svd(VL)
+
+del_vec = u[:,0]
+# del_vec = vh[0,:]
+delta = del_vec.reshape((nk,nk))
+# print(delta)
+
+plt.pcolormesh(np.real(delta),cmap="inferno")
+plt.colorbar()
+plt.savefig(f"scgap_{file_name}.png")
+
+Gamma = np.zeros((nk,nk),dtype=complex128)
+for i in range(nk):
+    for j in range(nk):
+        Gamma[i,j] = V[i,j,-i,-j,0,0] #V[0,0,0,0,i,j]
+
+plt.clf()
+plt.imshow(np.log(np.abs(Gamma)))
+plt.show()

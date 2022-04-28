@@ -14,6 +14,7 @@ reV = reV[()]
 imV = f['imV']
 imV = imV[()]
 V = reV + 1j*imV
+V = np.roll(V, (1,1,1,1,1,1), (0,1,2,3,4,5))
 hopping = f['hopping']
 nk = f['nk']
 nk = nk[()]
@@ -53,7 +54,7 @@ for kx in range(nk):
     for ky in range(nk):
         for kpx in range(nk):
             for kpy in range(nk):
-                VL[kx+nk*ky, kpx+nk*kpy] = V[kx,ky,-kx,-ky,kpx,kpy] * L(kpx,kpy)
+                VL[kx+nk*ky, kpx+nk*kpy] = V[kpx,kpy,kx,ky,-kx,-ky] * L(kpx,kpy)
 
 u, s, vh = linalg.svd(VL)
 
@@ -62,15 +63,16 @@ del_vec = u[:,0]
 delta = del_vec.reshape((nk,nk))
 # print(delta)
 
-plt.pcolormesh(np.real(delta),cmap="inferno")
+plt.pcolormesh(np.real(delta),cmap="coolwarm")
 plt.colorbar()
-plt.savefig(f"scgap_{file_name}.png")
-
-Gamma = np.zeros((nk,nk),dtype=complex128)
-for i in range(nk):
-    for j in range(nk):
-        Gamma[i,j] = V[i,j,-i,-j,0,0] #V[0,0,0,0,i,j]
-
-plt.clf()
-plt.imshow(np.log(np.abs(Gamma)))
 plt.show()
+#plt.savefig(f"scgap_{file_name}.png")
+
+# Gamma = np.zeros((nk,nk),dtype=complex128)
+# for i in range(nk):
+#     for j in range(nk):
+#         Gamma[i,j] = V[0,0,i,j,-i,-j] - V[i,j,0,0,0,0]
+
+# plt.clf()
+# plt.imshow(np.abs(Gamma))
+# plt.show()
